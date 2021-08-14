@@ -2,7 +2,15 @@ namespace SpriteKind {
     export const PowerUP = SpriteKind.create()
     export const Mode = SpriteKind.create()
     export const Teleport = SpriteKind.create()
+    export const Key = SpriteKind.create()
+    export const Deadly = SpriteKind.create()
 }
+sprites.onOverlap(SpriteKind.Player, SpriteKind.Deadly, function (sprite, otherSprite) {
+    info.changeLifeBy(-1)
+    effects.confetti.startScreenEffect(500)
+    music.bigCrash.play()
+    scene.cameraShake(4, 500)
+})
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     projectile = sprites.createProjectileFromSprite(img`
         . . . . . . . . . . . . . . . . 
@@ -46,6 +54,19 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
         projectile.y += 5
     }
 })
+function createKeys () {
+    for (let location3 of tiles.getTilesByType(assets.tile`myTile39`)) {
+        coin = sprites.create(assets.tile`myTile40`, SpriteKind.Key)
+        tiles.setTileAt(location3, assets.tile`transparency16`)
+        tiles.placeOnTile(coin, location3)
+    }
+}
+sprites.onOverlap(SpriteKind.Player, SpriteKind.Teleport, function (sprite, otherSprite) {
+    music.wawawawaa.play()
+    for (let location3 of tiles.getTilesByType(assets.tile`myTile29`)) {
+        tiles.setTileAt(location3, assets.tile`transparency16`)
+    }
+})
 function createTeleports () {
     for (let location5 of tiles.getTilesByType(assets.tile`teleport_editor`)) {
         teleport = sprites.create(assets.tile`myTile25`, SpriteKind.Teleport)
@@ -59,6 +80,15 @@ function createTeleports () {
         )
     }
 }
+info.onCountdownEnd(function () {
+	
+})
+sprites.onOverlap(SpriteKind.Player, SpriteKind.Key, function (sprite, otherSprite) {
+    music.magicWand.play()
+    for (let location3 of tiles.getTilesByType(assets.tile`myTile29`)) {
+        tiles.setTileAt(location3, assets.tile`transparency16`)
+    }
+})
 statusbars.onZero(StatusBarKind.EnemyHealth, function (status) {
     enemyDeath(status.spriteAttachedTo())
 })
@@ -110,6 +140,44 @@ function enemyDeath (enemy: Sprite) {
             `, SpriteKind.PowerUP)
         powerUp.x = enemy.x
         powerUp.y = enemy.y
+    }
+}
+function createDoors () {
+    for (let location2 of tiles.getTilesByType(assets.tile`myTile29`)) {
+        tiles.placeOnTile(coin, tiles.getTileLocation(0, 0))
+        tiles.setWallAt(location2, true)
+    }
+}
+function createLava () {
+    for (let location3 of tiles.getTilesByType(assets.tile`myTile12`)) {
+        coin = sprites.create(assets.tile`myTile12`, SpriteKind.Deadly)
+        tiles.setTileAt(location3, assets.tile`transparency16`)
+        tiles.placeOnTile(coin, location3)
+    }
+    for (let location3 of tiles.getTilesByType(assets.tile`myTile13`)) {
+        coin = sprites.create(assets.tile`myTile13`, SpriteKind.Deadly)
+        tiles.setTileAt(location3, assets.tile`transparency16`)
+        tiles.placeOnTile(coin, location3)
+    }
+    for (let location3 of tiles.getTilesByType(assets.tile`myTile41`)) {
+        coin = sprites.create(, SpriteKind.Deadly)
+        tiles.setTileAt(location3, assets.tile`transparency16`)
+        tiles.placeOnTile(coin, location3)
+    }
+    for (let location3 of tiles.getTilesByType(assets.tile`myTile42`)) {
+        coin = sprites.create(, SpriteKind.Deadly)
+        tiles.setTileAt(location3, assets.tile`transparency16`)
+        tiles.placeOnTile(coin, location3)
+    }
+    for (let location3 of tiles.getTilesByType(assets.tile`myTile44`)) {
+        coin = sprites.create(, SpriteKind.Deadly)
+        tiles.setTileAt(location3, assets.tile`transparency16`)
+        tiles.placeOnTile(coin, location3)
+    }
+    for (let location3 of tiles.getTilesByType(assets.tile`myTile43`)) {
+        coin = sprites.create(, SpriteKind.Deadly)
+        tiles.setTileAt(location3, assets.tile`transparency16`)
+        tiles.placeOnTile(coin, location3)
     }
 }
 function createCoins () {
@@ -364,10 +432,10 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSp
 let statusbar: StatusBarSprite = null
 let enemyShip: Sprite = null
 let enemySpawnTime = 0
-let coin: Sprite = null
 let powerUp: Sprite = null
 let ball: Sprite = null
 let teleport: Sprite = null
+let coin: Sprite = null
 let doublefireMode: Sprite = null
 let projectile: Sprite = null
 let playerSprite: Sprite = null
@@ -709,6 +777,9 @@ createCoins()
 createTeleports()
 createCherries()
 createSpheres()
+createDoors()
+createKeys()
+createLava()
 let enemySpeed = 20
 game.onUpdateInterval(5000, function () {
     enemySpeed += 5
