@@ -2,6 +2,9 @@ namespace SpriteKind {
     export const PowerUP = SpriteKind.create()
     export const Mode = SpriteKind.create()
 }
+controller.anyButton.onEvent(ControllerButtonEvent.Pressed, function () {
+    playerSprite.vx = 50
+})
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     projectile = sprites.createProjectileFromSprite(img`
         . . . . . . . . . . . . . . . . 
@@ -20,7 +23,7 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
         . . . . . . . . . . . . . . . . 
         . . . . . . . . . . . . . . . . 
         . . . . . . . . . . . . . . . . 
-        `, mySprite, 200, 0)
+        `, playerSprite, 200, 0)
     music.pewPew.play()
     if (doublefireMode && doublefireMode.lifespan > 0) {
         projectile.y += -5
@@ -41,7 +44,7 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
             . . . . . . . . . . . . . . . . 
             . . . . . . . . . . . . . . . . 
             . . . . . . . . . . . . . . . . 
-            `, mySprite, 200, 0)
+            `, playerSprite, 200, 0)
         projectile.y += 5
     }
 })
@@ -121,8 +124,9 @@ let enemyShip: Sprite = null
 let powerUp: Sprite = null
 let doublefireMode: Sprite = null
 let projectile: Sprite = null
+let teleport: Sprite = null
 let coin: Sprite = null
-let mySprite: Sprite = null
+let playerSprite: Sprite = null
 let enemySpawnTime = 0
 effects.starField.startScreenEffect()
 scene.setBackgroundImage(img`
@@ -370,87 +374,94 @@ scene.setBackgroundImage(img`
     ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
     ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
     `)
-mySprite = sprites.create(img`
-    f f f f f . . . . . . . . . . . 
-    4 4 2 2 f f f . . . . . . . . . 
-    f 6 6 6 2 2 f f f . . . . . . . 
-    f f 6 6 6 6 2 2 f f f . . . . . 
-    . . f 6 6 6 6 6 2 2 f f f . . . 
-    . . . f 6 6 6 6 6 6 2 2 f f f . 
-    . f f f 1 a 1 a 1 a 1 a 2 2 f f 
-    . f 5 4 5 3 3 3 3 3 3 3 3 3 2 f 
-    . f 2 5 4 3 3 3 3 3 3 3 3 3 2 f 
-    . f f f 1 a 1 a 1 a 1 a 2 2 f f 
-    . . . f 6 6 6 6 6 6 2 2 f f f . 
-    . f f 6 6 6 6 6 2 2 f f f . . . 
-    f f 6 6 6 6 2 2 f f f . . . . . 
-    f 6 6 6 2 2 f f f . . . . . . . 
-    4 4 2 2 f f f . . . . . . . . . 
-    f f f f f . . . . . . . . . . . 
-    `, SpriteKind.Player)
-controller.moveSprite(mySprite, 100, 100)
-mySprite.setFlag(SpriteFlag.StayInScreen, true)
-scene.cameraFollowSprite(mySprite)
-info.setLife(5)
-let enemySpeed = 20
-animation.runImageAnimation(
-mySprite,
-[img`
-    f f f f f . . . . . . . . . . . 
-    4 4 2 2 f f f . . . . . . . . . 
-    f 6 6 6 2 2 f f f . . . . . . . 
-    f f 6 6 6 6 2 2 f f f . . . . . 
-    . . f 6 6 6 6 6 2 2 f f f . . . 
-    . . . f 6 6 6 6 6 6 2 2 f f f . 
-    . f f f 1 a 1 1 a 1 1 a 2 2 f f 
-    . f 5 4 5 3 3 3 3 3 3 3 3 3 2 f 
-    . f 2 5 4 3 3 3 3 3 3 3 3 3 2 f 
-    . f f f 1 a 1 1 a 1 1 a 2 2 f f 
-    . . . f 6 6 6 6 6 6 2 2 f f f . 
-    . f f 6 6 6 6 6 2 2 f f f . . . 
-    f f 6 6 6 6 2 2 f f f . . . . . 
-    f 6 6 6 2 2 f f f . . . . . . . 
-    4 4 2 2 f f f . . . . . . . . . 
-    f f f f f . . . . . . . . . . . 
-    `,img`
-    f f f f f . . . . . . . . . . . 
-    4 4 2 2 f f f . . . . . . . . . 
-    f 6 6 6 2 2 f f f . . . . . . . 
-    f f 6 6 6 6 2 2 f f f . . . . . 
-    . . f 6 6 6 6 6 2 2 f f f . . . 
-    . . . f 6 6 6 6 6 6 2 2 f f f . 
-    . f f f a 1 1 a 1 1 a 1 2 2 f f 
-    . f 2 5 4 3 3 3 3 3 3 3 3 3 2 f 
-    . f 5 4 5 3 3 3 3 3 3 3 3 3 2 f 
-    . f f f a 1 1 a 1 1 a 1 2 2 f f 
-    . . . f 6 6 6 6 6 6 2 2 f f f . 
-    . f f 6 6 6 6 6 2 2 f f f . . . 
-    f f 6 6 6 6 2 2 f f f . . . . . 
-    f 6 6 6 2 2 f f f . . . . . . . 
-    4 4 2 2 f f f . . . . . . . . . 
-    f f f f f . . . . . . . . . . . 
-    `,img`
-    f f f f f . . . . . . . . . . . 
-    4 4 2 2 f f f . . . . . . . . . 
-    f 6 6 6 2 2 f f f . . . . . . . 
-    f f 6 6 6 6 2 2 f f f . . . . . 
-    . . f 6 6 6 6 6 2 2 f f f . . . 
-    . . . f 6 6 6 6 6 6 2 2 f f f . 
-    . f f f 1 1 a 1 1 a 1 1 2 2 f f 
-    . f 2 4 4 3 3 3 3 3 3 3 3 3 2 f 
-    . f 2 4 5 3 3 3 3 3 3 3 3 3 2 f 
-    . f f f 1 1 a 1 1 a 1 1 2 2 f f 
-    . . . f 6 6 6 6 6 6 2 2 f f f . 
-    . f f 6 6 6 6 6 2 2 f f f . . . 
-    f f 6 6 6 6 2 2 f f f . . . . . 
-    f 6 6 6 2 2 f f f . . . . . . . 
-    4 4 2 2 f f f . . . . . . . . . 
-    f f f f f . . . . . . . . . . . 
-    `],
-100,
-true
-)
 tiles.setTilemap(tilemap`level1`)
+info.startCountdown(120)
+info.setLife(5)
+for (let location of tiles.getTilesByType(assets.tile`myTile27`)) {
+    playerSprite = sprites.create(img`
+        f f f f f . . . . . . . . . . . 
+        4 4 2 2 f f f . . . . . . . . . 
+        f 6 6 6 2 2 f f f . . . . . . . 
+        f f 6 6 6 6 2 2 f f f . . . . . 
+        . . f 6 6 6 6 6 2 2 f f f . . . 
+        . . . f 6 6 6 6 6 6 2 2 f f f . 
+        . f f f 1 a 1 a 1 a 1 a 2 2 f f 
+        . f 5 4 5 3 3 3 3 3 3 3 3 3 2 f 
+        . f 2 5 4 3 3 3 3 3 3 3 3 3 2 f 
+        . f f f 1 a 1 a 1 a 1 a 2 2 f f 
+        . . . f 6 6 6 6 6 6 2 2 f f f . 
+        . f f 6 6 6 6 6 2 2 f f f . . . 
+        f f 6 6 6 6 2 2 f f f . . . . . 
+        f 6 6 6 2 2 f f f . . . . . . . 
+        4 4 2 2 f f f . . . . . . . . . 
+        f f f f f . . . . . . . . . . . 
+        `, SpriteKind.Player)
+    tiles.placeOnTile(playerSprite, location)
+    tiles.setTileAt(location, assets.tile`transparency16`)
+    controller.moveSprite(playerSprite)
+    playerSprite.setFlag(SpriteFlag.StayInScreen, true)
+    playerSprite.setVelocity(50, 0)
+    playerSprite.startEffect(effects.trail)
+    playerSprite.setBounceOnWall(false)
+    scene.cameraFollowSprite(playerSprite)
+    animation.runImageAnimation(
+    playerSprite,
+    [img`
+        f f f f f . . . . . . . . . . . 
+        4 4 2 2 f f f . . . . . . . . . 
+        f 6 6 6 2 2 f f f . . . . . . . 
+        f f 6 6 6 6 2 2 f f f . . . . . 
+        . . f 6 6 6 6 6 2 2 f f f . . . 
+        . . . f 6 6 6 6 6 6 2 2 f f f . 
+        . f f f 1 a 1 1 a 1 1 a 2 2 f f 
+        . f 5 4 5 3 3 3 3 3 3 3 3 3 2 f 
+        . f 2 5 4 3 3 3 3 3 3 3 3 3 2 f 
+        . f f f 1 a 1 1 a 1 1 a 2 2 f f 
+        . . . f 6 6 6 6 6 6 2 2 f f f . 
+        . f f 6 6 6 6 6 2 2 f f f . . . 
+        f f 6 6 6 6 2 2 f f f . . . . . 
+        f 6 6 6 2 2 f f f . . . . . . . 
+        4 4 2 2 f f f . . . . . . . . . 
+        f f f f f . . . . . . . . . . . 
+        `,img`
+        f f f f f . . . . . . . . . . . 
+        4 4 2 2 f f f . . . . . . . . . 
+        f 6 6 6 2 2 f f f . . . . . . . 
+        f f 6 6 6 6 2 2 f f f . . . . . 
+        . . f 6 6 6 6 6 2 2 f f f . . . 
+        . . . f 6 6 6 6 6 6 2 2 f f f . 
+        . f f f a 1 1 a 1 1 a 1 2 2 f f 
+        . f 2 5 4 3 3 3 3 3 3 3 3 3 2 f 
+        . f 5 4 5 3 3 3 3 3 3 3 3 3 2 f 
+        . f f f a 1 1 a 1 1 a 1 2 2 f f 
+        . . . f 6 6 6 6 6 6 2 2 f f f . 
+        . f f 6 6 6 6 6 2 2 f f f . . . 
+        f f 6 6 6 6 2 2 f f f . . . . . 
+        f 6 6 6 2 2 f f f . . . . . . . 
+        4 4 2 2 f f f . . . . . . . . . 
+        f f f f f . . . . . . . . . . . 
+        `,img`
+        f f f f f . . . . . . . . . . . 
+        4 4 2 2 f f f . . . . . . . . . 
+        f 6 6 6 2 2 f f f . . . . . . . 
+        f f 6 6 6 6 2 2 f f f . . . . . 
+        . . f 6 6 6 6 6 2 2 f f f . . . 
+        . . . f 6 6 6 6 6 6 2 2 f f f . 
+        . f f f 1 1 a 1 1 a 1 1 2 2 f f 
+        . f 2 4 4 3 3 3 3 3 3 3 3 3 2 f 
+        . f 2 4 5 3 3 3 3 3 3 3 3 3 2 f 
+        . f f f 1 1 a 1 1 a 1 1 2 2 f f 
+        . . . f 6 6 6 6 6 6 2 2 f f f . 
+        . f f 6 6 6 6 6 2 2 f f f . . . 
+        f f 6 6 6 6 2 2 f f f . . . . . 
+        f 6 6 6 2 2 f f f . . . . . . . 
+        4 4 2 2 f f f . . . . . . . . . 
+        f f f f f . . . . . . . . . . . 
+        `],
+    100,
+    true
+    )
+}
 for (let location of tiles.getTilesByType(assets.tile`myTile24`)) {
     coin = sprites.create(img`
         . . . . . . . . . . . . . . . . 
@@ -470,6 +481,8 @@ for (let location of tiles.getTilesByType(assets.tile`myTile24`)) {
         . . . . . f f f f f f f . . . . 
         . . . . . . . . . . . . . . . . 
         `, SpriteKind.Food)
+    tiles.placeOnTile(coin, location)
+    tiles.setTileAt(location, assets.tile`transparency16`)
     animation.runImageAnimation(
     coin,
     [img`
@@ -630,6 +643,80 @@ for (let location of tiles.getTilesByType(assets.tile`myTile24`)) {
     true
     )
 }
+for (let location of tiles.getTilesByType(assets.tile`myTile8`)) {
+    coin = sprites.create(img`
+        . . . . . . . . . . . 6 6 6 6 6 
+        . . . . . . . . . 6 6 7 7 7 7 8 
+        . . . . . . 8 8 8 7 7 8 8 6 8 8 
+        . . e e e e c 6 6 8 8 . 8 7 8 . 
+        . e 2 5 4 2 e c 8 . . . 6 7 8 . 
+        e 2 4 2 2 2 2 2 c . . . 6 7 8 . 
+        e 2 2 2 2 2 2 2 c . . . 8 6 8 . 
+        e 2 e e 2 2 2 2 e e e e c 6 8 . 
+        c 2 e e 2 2 2 2 e 2 5 4 2 c 8 . 
+        . c 2 e e e 2 e 2 4 2 2 2 2 c . 
+        . . c 2 2 2 e e 2 2 2 2 2 2 2 e 
+        . . . e c c e c 2 2 2 2 2 2 2 e 
+        . . . . . . . c 2 e e 2 2 e 2 c 
+        . . . . . . . c e e e e e e 2 c 
+        . . . . . . . . c e 2 2 2 2 c . 
+        . . . . . . . . . c c c c c . . 
+        `, SpriteKind.Food)
+    tiles.placeOnTile(coin, location)
+    tiles.setTileAt(location, assets.tile`transparency16`)
+}
+for (let location of tiles.getTilesByType(assets.tile`myTile26`)) {
+    coin = sprites.create(img`
+        . . . . . . . . . . . 6 6 6 6 6
+        . . . . . . . . . 6 6 7 7 7 7 8
+        . . . . . . 8 8 8 7 7 8 8 6 8 8
+        . . e e e e c 6 6 8 8 . 8 7 8 .
+        . e 2 5 4 2 e c 8 . . . 6 7 8 .
+        e 2 4 2 2 2 2 2 c . . . 6 7 8 .
+        e 2 2 2 2 2 2 2 c . . . 8 6 8 .
+        e 2 e e 2 2 2 2 e e e e c 6 8 .
+        c 2 e e 2 2 2 2 e 2 5 4 2 c 8 .
+        . c 2 e e e 2 e 2 4 2 2 2 2 c .
+        . . c 2 2 2 e e 2 2 2 2 2 2 2 e
+        . . . e c c e c 2 2 2 2 2 2 2 e
+        . . . . . . . c 2 e e 2 2 e 2 c
+        . . . . . . . c e e e e e e 2 c
+        . . . . . . . . c e 2 2 2 2 c .
+        . . . . . . . . . c c c c c . .
+    `, SpriteKind.Food)
+    tiles.placeOnTile(coin, location)
+    tiles.setTileAt(location, assets.tile`transparency16`)
+}
+for (let location of tiles.getTilesByType(assets.tile`teleport_editor`)) {
+    let mySprite: Sprite = null
+    teleport = sprites.create(assets.tile`myTile25`, SpriteKind.Food)
+    tiles.placeOnTile(teleport, location)
+    tiles.setTileAt(location, assets.tile`transparency16`)
+    animation.runImageAnimation(
+    mySprite,
+    [img`
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        `],
+    500,
+    false
+    )
+}
+let enemySpeed = 20
 game.onUpdateInterval(5000, function () {
     enemySpeed += 5
     enemySpeed = Math.min(enemySpeed, 50)
