@@ -14,9 +14,10 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Deadly, function (sprite, otherS
     scene.cameraShake(4, 500)
 })
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Teleport1, function (sprite, otherSprite) {
+    effects.confetti.startScreenEffect(2000)
     music.siren.play()
-    for (let location3 of tiles.getTilesByType(assets.tile`myTile29`)) {
-        playerSprite.setPosition(location3, location3)
+    for (let location3 of tiles.getTilesByType(assets.tile`myTile52`)) {
+        playerSprite.setPosition(location3.x, location3.y)
         tiles.setTileAt(location3, assets.tile`transparency16`)
     }
 })
@@ -87,8 +88,10 @@ info.onCountdownEnd(function () {
 })
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Key, function (sprite, otherSprite) {
     music.magicWand.play()
+    pause(100)
     for (let location3 of tiles.getTilesByType(assets.tile`myTile29`)) {
         tiles.setTileAt(location3, assets.tile`transparency16`)
+        tiles.setWallAt(tiles.getTileLocation(location3.x, location3.y), false)
     }
 })
 statusbars.onZero(StatusBarKind.EnemyHealth, function (status) {
