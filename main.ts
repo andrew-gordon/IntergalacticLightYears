@@ -4,12 +4,21 @@ namespace SpriteKind {
     export const Teleport = SpriteKind.create()
     export const Key = SpriteKind.create()
     export const Deadly = SpriteKind.create()
+    export const Teleport1 = SpriteKind.create()
+    export const Teleport2 = SpriteKind.create()
 }
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Deadly, function (sprite, otherSprite) {
     info.changeLifeBy(-1)
     effects.confetti.startScreenEffect(500)
     music.bigCrash.play()
     scene.cameraShake(4, 500)
+})
+sprites.onOverlap(SpriteKind.Player, SpriteKind.Teleport1, function (sprite, otherSprite) {
+    music.siren.play()
+    for (let location3 of tiles.getTilesByType(assets.tile`myTile29`)) {
+        playerSprite.setPosition(location3, location3)
+        tiles.setTileAt(location3, assets.tile`transparency16`)
+    }
 })
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     projectile = sprites.createProjectileFromSprite(img`
@@ -61,17 +70,10 @@ function createKeys () {
         tiles.placeOnTile(coin, location3)
     }
 }
-sprites.onOverlap(SpriteKind.Player, SpriteKind.Teleport, function (sprite, otherSprite) {
-    music.wawawawaa.play()
-    for (let location3 of tiles.getTilesByType(assets.tile`myTile29`)) {
-        tiles.setTileAt(location3, assets.tile`transparency16`)
-    }
-})
 function createTeleports () {
-    for (let location5 of tiles.getTilesByType(assets.tile`teleport_editor`)) {
-        teleport = sprites.create(assets.tile`myTile25`, SpriteKind.Teleport)
+    for (let location5 of tiles.getTilesByType(assets.tile`myTile45`)) {
+        teleport = sprites.create(assets.tile`myTile25`, SpriteKind.Teleport1)
         tiles.placeOnTile(teleport, location5)
-        tiles.setTileAt(location5, assets.tile`transparency16`)
         animation.runImageAnimation(
         teleport,
         assets.animation`teleport_animated`,
@@ -160,22 +162,90 @@ function createLava () {
         tiles.placeOnTile(coin, location3)
     }
     for (let location3 of tiles.getTilesByType(assets.tile`myTile41`)) {
-        coin = sprites.create(, SpriteKind.Deadly)
+        coin = sprites.create(img`
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            `, SpriteKind.Deadly)
         tiles.setTileAt(location3, assets.tile`transparency16`)
         tiles.placeOnTile(coin, location3)
     }
     for (let location3 of tiles.getTilesByType(assets.tile`myTile42`)) {
-        coin = sprites.create(, SpriteKind.Deadly)
+        coin = sprites.create(img`
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            `, SpriteKind.Deadly)
         tiles.setTileAt(location3, assets.tile`transparency16`)
         tiles.placeOnTile(coin, location3)
     }
     for (let location3 of tiles.getTilesByType(assets.tile`myTile44`)) {
-        coin = sprites.create(, SpriteKind.Deadly)
+        coin = sprites.create(img`
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            `, SpriteKind.Deadly)
         tiles.setTileAt(location3, assets.tile`transparency16`)
         tiles.placeOnTile(coin, location3)
     }
     for (let location3 of tiles.getTilesByType(assets.tile`myTile43`)) {
-        coin = sprites.create(, SpriteKind.Deadly)
+        coin = sprites.create(img`
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            `, SpriteKind.Deadly)
         tiles.setTileAt(location3, assets.tile`transparency16`)
         tiles.placeOnTile(coin, location3)
     }
