@@ -88,6 +88,7 @@ info.onCountdownEnd(function () {
 })
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Key, function (sprite, otherSprite) {
     music.magicWand.play()
+    otherSprite.destroy()
     pause(100)
     for (let location3 of tiles.getTilesByType(assets.tile`myTile29`)) {
         tiles.setTileAt(location3, assets.tile`transparency16`)
